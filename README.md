@@ -1,0 +1,325 @@
+# devops
+
+1. buy a domain on https://start.godaddy.com/ <br>
+
+in aws go to: route53:
+create hosted zone
+
+take the values from here:
+https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones#ListRecordSets/Z0578988Z5FGXIZ849XL <br>
+
+to godaddy:
+<br>
+change nameservers from :
+<br>
+Nameservers<br>
+ns19.domaincontrol.com <br>
+ns20.domaincontrol.com <br>
+<br>
+to: <br>
+ns-1255.awsdns-28.org <br>
+ns-579.awsdns-08.net  <br>
+ns-438.awsdns-54.com  <br>
+ns-1717.awsdns-22.co.uk <br>
+
+
+##AIM
+go to AIM and create a user with programatic access and console sign in (admin credentials)
+```
+accountid = 
+access_key=
+secret_key=
+username=academy
+password=Unix11!@
+```
+
+
+
+on gitlab, backend service. <br>
+goto: settings -> ci/cd <br>
+expand variables, update: (unprotect the vars)
+```
+AWS_ACCESS_KEY_ID=
+AWS_DEFAULT_REGION=us-east-1
+AWS_SECRET_ACCESS_KEY=
+CI_AWS_ECS_CLUSTER=ecs-stage-cluster
+CI_AWS_ECS_SERVICE=ecs-stage-service
+```
+###RDS
+
+create a database.
+publicly accesible   , master user: admin, masterpassword: Unix11!! <br>
+after created goto inboud rules and add "alltrafic"
+
+```
+create database students_stage_ecs;
+CREATE USER 'students_staging_ecs'@'%' IDENTIFIED BY 'students_staging_ecs';
+GRANT all PRIVILEGES on students_stage_ecs to 'students_staging_ecs'@'%';
+GRANT all PRIVILEGES on students_stage_ecs.* to 'students_staging_ecs'@'%';
+
+create database students_stage_eks;
+CREATE USER 'students_staging_eks'@'%' IDENTIFIED BY 'students_staging_eks';
+GRANT all PRIVILEGES on students_stage_eks to 'students_staging_eks'@'%';
+GRANT all PRIVILEGES on students_stage_eks.* to 'students_staging_eks'@'%';
+
+
+```
+
+
+###Parameter store
+```
+#backend_url_ecs='https:\/\/ecs-stage.nivitzhaky.com\/api'
+#backend_url_eks=https:\/\/eks-stage.nivitzhaky.com\/api
+students_staging_ecs=jdbc:mysql:\/\/database-2.cmyyngkp9f7o.us-east-1.rds.amazonaws.com:3306\/students_stage_ecs
+students_staging_ecs_user=students_staging_ecs
+students_staging_ecs_password=students_staging_ecs
+students_staging_eks=jdbc:mysql:\/\/database-2.cmyyngkp9f7o.us-east-1.rds.amazonaws.com:3306\/students_stage_eks
+students_staging_eks_user=students_staging_eks
+students_staging_eks_password=students_staging_eks
+```
+###ECR
+create an ECR, call it students
+
+
+##ECS
+update ECR in the gitlab.ci<br>
+create taskdefinition ->  ecs-task-definition <br>
+containername ->student-ecs-container<br>
+imageuri-> copy from ecr table<br>
+container port-> 8080 <br>
+cpu - 1, memory- 4 <br>
+configure healthcheck:  CMD-SHELL, curl -f http://localhost:8080/actuator/health <br>
+
+
+
+create a service: <br>
+faragate-> service-> family=ecs-task-definition->servicename = ecs-stage-service <br>
+
+
+create applicaiton load balancer (ec2 load balancer)
+
+
+springboot-lb
+define vpc (default)
+defive availability zones (at least 3)
+port 8080 <br>
+create a target group-> type=ipaddress -> students-ecs-tg-> port 8080->configure healthcheck:  /actuator/health-> next-> copy private ip from ecs ports=8080-> include as pending <br>
+
+
+(check if needed) after creating service and task go to security group of the service and allow inbound 8080<br>
+when the task goes up we can test by ip:8080/swagger-ui.html
+
+##front repository:
+create a public s3 bucket: ecs-stage.nivitzhaky.com   (enable static web hosting)
+in permissions:
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicRead",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": [
+                "s3:GetObject",
+                "s3:GetObjectVersion"
+            ],
+            "Resource": "arn:aws:s3:::ecs-stage.nivitzhaky.com/*"
+        }
+    ]
+}
+```
+####cloudfront
+create distribution<br>
+origin1->
+http only -> 8080-> origin = select load balancer => choose all allowed http methods<br>
+alternate domain name-> ecs-stage.nivitzhaky.com
+Custom SSL certificate - optional -> request new certificate, domanname = *.nivitzhaky.com<br>
+validate be dns-> make aws create cname
+origin2-> select s3 bucket ->
+Default root object: index.html->legacy access identifiers-> create new OAI->
+
+hosted zones-> domain -> create record ->
+
+cname (give name) ecs-stage.nivitzhaky.com and copy cloudfront distribution url
+
+
+
+###EKS
+kubectl install
+```
+sudo curl --silent --location -o /usr/local/bin/kubectl \
+   https://s3.us-west-2.amazonaws.com/amazon-eks/1.21.5/2022-01-21/bin/linux/amd64/kubectl
+
+sudo chmod +x /usr/local/bin/kubectl
+```
+
+update aws cli
+```
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+```
+install jp
+```
+sudo yum -y install jq gettext bash-completion moreutils
+echo 'yq() {
+  docker run --rm -i -v "${PWD}":/workdir mikefarah/yq "$@"
+}' | tee -a ~/.bashrc && source ~/.bashrc
+```
+kubectl bash completion
+```
+kubectl completion bash >>  ~/.bash_completion
+. /etc/profile.d/bash_completion.sh
+. ~/.bash_completion
+```
+
+verify commands are in path:
+```
+for command in kubectl jq envsubst aws
+  do
+    which $command &>/dev/null && echo "$command in path" || echo "$command NOT FOUND"
+  done
+```
+aws load balancer control version
+```
+echo 'export LBC_VERSION="v2.4.1"' >>  ~/.bash_profile
+echo 'export LBC_CHART_VERSION="1.4.1"' >>  ~/.bash_profile
+.  ~/.bash_profile
+```
+
+create role for the computer: <br>
+https://console.aws.amazon.com/iam/home#/roles$new?step=review&commonUseCase=EC2%2BEC2&selectedUseCase=EC2&policies=arn:aws:iam::aws:policy%2FAdministratorAccess&roleName=eks-admin
+<br>
+next next<br>
+turn off credential managment in settings icone -> aws settings -> turn offf temporary credentials
+```
+(maybe not needed)aws cloud9 update-environment  --environment-id $C9_PID --managed-credentials-action DISABLE
+rm -vf ${HOME}/.aws/credentials
+
+(not needed done with ui)aws sts assume-role --role-arn "arn:aws:iam::416790849346:role/eks-admin" --role-session-name A
+go to top right -> manage ec2 instance -> actions -> security -> modify aim role -> select eks-admin
+
+aws kms create-alias --alias-name alias/eks --target-key-id $(aws kms create-key --query KeyMetadata.Arn --output text)
+export MASTER_ARN=$(aws kms describe-key --key-id alias/eks --query KeyMetadata.Arn --output text)
+echo "export MASTER_ARN=${MASTER_ARN}" | tee -a ~/.bash_profile
+
+# install eks-ctl
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+
+sudo mv -v /tmp/eksctl /usr/local/bin
+
+eksctl version
+
+eksctl completion bash >> ~/.bash_completion
+. /etc/profile.d/bash_completion.sh
+. ~/.bash_completion
+
+export ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
+export AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
+export AZS=($(aws ec2 describe-availability-zones --query 'AvailabilityZones[].ZoneName' --output text --region $AWS_REGION))
+
+test -n "$AWS_REGION" && echo AWS_REGION is "$AWS_REGION" || echo AWS_REGION is not set
+
+echo "export ACCOUNT_ID=${ACCOUNT_ID}" | tee -a ~/.bash_profile
+echo "export AWS_REGION=${AWS_REGION}" | tee -a ~/.bash_profile
+echo "export AZS=(${AZS[@]})" | tee -a ~/.bash_profile
+aws configure set default.region ${AWS_REGION}
+aws configure get default.region
+
+cat << EOF > eks.yaml
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: eks-students
+  region: ${AWS_REGION}
+  version: "1.25"
+
+availabilityZones: ["${AZS[0]}", "${AZS[1]}"]
+
+managedNodeGroups:
+- name: nodegroup
+  desiredCapacity: 2
+  instanceType: t3.small
+  ssh:
+    enableSsm: true
+
+# To enable all of the control plane logs, uncomment below:
+# cloudWatch:
+#  clusterLogging:
+#    enableTypes: ["*"]
+
+secretsEncryption:
+  keyARN: ${MASTER_ARN}
+EOF
+
+
+eksctl create cluster -f eks.yaml
+```
+
+## EKS deploy
+in gitlab go to eks2 branch -> springboot-> values.yaml put the ecr adress<br>
+in gitlab-ci.yml<br>
+change registry url and app name to: 416790849346.dkr.ecr.us-east-1.amazonaws.com and students_staging_eks<br>
+adjust the line of assume role: arn:aws:iam::416790849346:role/eks-admin <br>
+go to IAM->roles-> eks-admin->edit and add
+```
+		{
+			"Effect": "Allow",
+			"Principal": {
+				"AWS": "arn:aws:iam::308312479356:user/academy"
+			},
+			"Action": "sts:AssumeRole"
+		}
+```
+add "UNPROTECTED" "FILE" variable called KUBECONFIG
+with value of cat /home/ec2-user/.kube/config
+
+
+
+create a public s3 bucket: eks-stage.nivitzhaky.com
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicRead",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": [
+                "s3:GetObject",
+                "s3:GetObjectVersion"
+            ],
+            "Resource": "arn:aws:s3:::eks-stage.nivitzhaky.com/*"
+        },
+        {
+            "Sid": "AllowPublicRead",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "*"
+            },
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::eks-stage.nivitzhaky.com/*"
+        }
+    ]
+}
+```
+
+
+
+
+## route configuration
+
+cloudfront eks-> create distribution<br>
+2 origins, Default root object: index.html
+1. eks-stage
+   path: /api/* http only -> 8081-> origin = select load balancer => choose all allowed http methods<br>
+2. s3 bucket
+   use: legacy access identities, check: no, I will update bucket policy
+
+alternate domain name-> eks-stage.nivitzhaky.com
+Custom SSL certificate use domanname = *.nivitzhaky.com<br>
+validate be dns-> create cname eks-stage.nivitzhaky.com
+
