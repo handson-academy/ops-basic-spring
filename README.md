@@ -1,4 +1,131 @@
 # devops
+Niv Itzhaky<br>
+https://www.linkedin.com/in/nivitzhaky/<br>
+niv.itzhaky@gmail.com<br>
+0525236451<br>
+
+
+create your own account <br>
+fork to your own git <br>
+
+## ec2
+create ec2 instance: <br>
+name->testec2, new keypair-> test,  launch instance <br>
+go to inboud rules-> allow all traffic
+
+
+###DOCKER
+```
+sudo yum update -y
+sudo yum install -y docker
+sudo service docker start
+sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+sudo docker run -d \
+    -e MYSQL_ROOT_PASSWORD=Unix11 \
+    -e MYSQL_DATABASE=students \
+    -e MYSQL_USER=students \
+    -e MYSQL_PASSWORD=Unix11 \
+    -p 3306:3306 \
+    -v mysql-data:/var/lib/mysql \
+    mysql:8.0
+    
+sudo docker ps
+sudo docker logs [containerid]
+
+sudo docker kill [containerid]
+```
+
+###GIT
+attach ssh key to git
+```
+ssh-keygen
+cat ./.ssh/id_rsa.pub
+
+create ec2 branch <br>
+point to local db <br>
+change src/main/resources/application.properties<br>
+```
+spring.datasource.url=jdbc:mysql://mysql:3306/students
+spring.datasource.username=students
+spring.datasource.password=Unix11
+```
+
+install git
+```
+sudo yum update
+sudo yum install git
+git clone git@github.com:nivitzhaky/ops-basic-spring.git -b ec2
+```
+###MAVEN
+install maven
+```
+sudo wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
+sudo yum install -y apache-maven
+
+cd ops-basic-spring
+mvn clean install
+```
+there is a new folder called target with basic-0.0.1-SNAPSHOT.jar file
+
+###DOCKERIZE
+```
+sudo docker build . -t backend
+
+echo "
+version: \"3\"
+services:
+  appserver:
+    container_name: server
+    hostname: localhost
+    image: backend
+    ports:
+      - "8080:8080"
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: Unix11
+      MYSQL_DATABASE: students
+      MYSQL_USER: students
+      MYSQL_PASSWORD: Unix11
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    privileged: true
+" >>  docker-compose-aws.yml
+
+sudo  docker-compose -f docker-compose-aws.yml  up -d
+
+sudo docker-compose -f docker-compose-aws.yml  down
+```
+
+
+TERMINATE THE MACHINE IF YOU WANT... <br>
+
+###RDS
+
+create a database.
+publicly accesible   , master user: admin, masterpassword: Unix11!! <br>
+after created goto inboud rules and add "alltrafic"
+
+```
+
+create database students_stage_ecs;
+CREATE USER 'students_staging_ecs'@'%' IDENTIFIED BY 'students_staging_ecs';
+GRANT all PRIVILEGES on students_stage_ecs to 'students_staging_ecs'@'%';
+GRANT all PRIVILEGES on students_stage_ecs.* to 'students_staging_ecs'@'%';
+
+create database students_stage_eks;
+CREATE USER 'students_staging_eks'@'%' IDENTIFIED BY 'students_staging_eks';
+GRANT all PRIVILEGES on students_stage_eks to 'students_staging_eks'@'%';
+GRANT all PRIVILEGES on students_stage_eks.* to 'students_staging_eks'@'%';
+
+
+```
+
 
 1. buy a domain on https://start.godaddy.com/ <br>
 
@@ -44,25 +171,6 @@ AWS_DEFAULT_REGION=us-east-1
 AWS_SECRET_ACCESS_KEY=
 CI_AWS_ECS_CLUSTER=ecs-stage-cluster
 CI_AWS_ECS_SERVICE=ecs-stage-service
-```
-###RDS
-
-create a database.
-publicly accesible   , master user: admin, masterpassword: Unix11!! <br>
-after created goto inboud rules and add "alltrafic"
-
-```
-create database students_stage_ecs;
-CREATE USER 'students_staging_ecs'@'%' IDENTIFIED BY 'students_staging_ecs';
-GRANT all PRIVILEGES on students_stage_ecs to 'students_staging_ecs'@'%';
-GRANT all PRIVILEGES on students_stage_ecs.* to 'students_staging_ecs'@'%';
-
-create database students_stage_eks;
-CREATE USER 'students_staging_eks'@'%' IDENTIFIED BY 'students_staging_eks';
-GRANT all PRIVILEGES on students_stage_eks to 'students_staging_eks'@'%';
-GRANT all PRIVILEGES on students_stage_eks.* to 'students_staging_eks'@'%';
-
-
 ```
 
 
