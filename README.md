@@ -14,7 +14,7 @@ name->testec2, new keypair-> test,  launch instance <br>
 go to inboud rules-> allow all traffic
 
 
-###DOCKER
+### DOCKER
 ```
 sudo yum update -y
 sudo yum install -y docker
@@ -37,7 +37,7 @@ sudo docker logs [containerid]
 sudo docker kill [containerid]
 ```
 
-###GIT
+### GIT
 attach ssh key to git
 ```
 ssh-keygen
@@ -71,7 +71,7 @@ mvn clean install
 ```
 there is a new folder called target with basic-0.0.1-SNAPSHOT.jar file
 
-###DOCKERIZE
+### DOCKERIZE
 ```
 sudo docker build . -t backend
 
@@ -106,7 +106,7 @@ sudo docker-compose -f docker-compose-aws.yml  down
 
 TERMINATE THE MACHINE IF YOU WANT... <br>
 
-###RDS
+### RDS
 
 create a database.
 publicly accesible   , master user: admin, masterpassword: Unix11!! <br>
