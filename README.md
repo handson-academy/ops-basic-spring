@@ -74,6 +74,11 @@ there is a new folder called target with basic-0.0.1-SNAPSHOT.jar file
 ### DOCKERIZE
 ```
 sudo docker build . -t backend
+sudo docker login
+nivitzhaky
+Jul201789#
+sudo docker tag backend nivitzhaky/backend
+sudo docker push nivitzhaky/backend
 
 echo "
 version: \"3\"
@@ -81,7 +86,7 @@ services:
   appserver:
     container_name: server
     hostname: localhost
-    image: backend
+    image: nivitzhaky/backend:latest
     ports:
       - "8080:8080"
   mysql:
@@ -96,12 +101,81 @@ services:
     volumes:
       - ./mysql-data:/var/lib/mysql
     privileged: true
-" >>  docker-compose-aws.yml
+" >>  docker-compose.yml
 
-sudo  docker-compose -f docker-compose-aws.yml  up -d
-
-sudo docker-compose -f docker-compose-aws.yml  down
+sudo  docker-compose   up -d
+# test http://[ip address]:8080/swagger-ui.html
+sudo docker-compose   down
 ```
+### DOCKER AUTOMATION
+add the following secrets:
+```
+DOCKERHUB_USERNAME = nivitzhaky
+DOCKERHUB_TOKEN = dckr_pat_wNsuA4lJiuBnc4iCsNCmxjCVjc4
+EC2_INSTANCE_PUBLIC_IP = 13.50.235.108
+
+```
+
+
+add .github/workflows/build.yml
+```
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - ec2
+
+env:
+  APP_VERSION: v1.0.${{ github.run_number }}
+
+jobs:
+  build:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESSE_TOKEN }}
+        run: mvn clean install
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/backend:${{ env.APP_VERSION }}
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_INSTANCE_PUBLIC_IP }}
+          username: ec2-user
+          password: ${{ secrets.SSH_PASSWORD }} # store the SSH password as a secret in the repository
+          script: |
+            cd /home/ec2-user/ops-basic-spring
+	    sed -i 's/image: nivitzhaky\/backend:.*/image: nivitzhaky\/backend:v1.0.${{ github.run_number }}/g' /home/ec2-user/ops-basic-spring/docker-compose.yml
+            sudo /usr/local/bin/docker-compose  down || true
+            sudo /usr/local/bin/docker-compose  up -d || true
+```
+change /src/main/java/com/handson/basic/controller/StudentsController.java <br>
+getHighSatStudents -> getHighSatStudents1
+check that swagger updates
 
 
 TERMINATE THE MACHINE IF YOU WANT... <br>
