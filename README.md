@@ -42,6 +42,7 @@ attach ssh key to git
 ```
 ssh-keygen
 cat ./.ssh/id_rsa.pub
+```
 
 create ec2 branch <br>
 point to local db <br>
