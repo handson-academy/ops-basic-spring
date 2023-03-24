@@ -6,7 +6,7 @@ niv.itzhaky@gmail.com<br>
 
 
 create your own account <br>
-fork to your own git <br>
+fork https://github.com/handson-academy/ops-basic-spring/ to your own git <br>
 
 ## ec2
 create ec2 instance: <br>
@@ -176,6 +176,61 @@ jobs:
 change /src/main/java/com/handson/basic/controller/StudentsController.java <br>
 getHighSatStudents -> getHighSatStudents1
 check that swagger updates
+
+### S3 deploy
+create bucket niv.backend.students <br>
+public false<br>
+in properties make static web hosting true<br>
+
+in AIM create a user for the deploy with admin privileges <br>
+create and save the access key
+fork the repository: https://github.com/handson-academy/ops-basic-angular
+fill the secrets:
+```
+AWS_ACCESS_KEY_ID: 
+AWS_SECRET_ACCESS_KEY:
+AWS_REGION: <YOUR_AWS_REGION>
+S3_BUCKET_NAME: <YOUR_S3_BUCKET_NAME>
+```
+change backend url to: 'http://13.50.235.108:8080/api'
+in ops-basic-angular/src/environments/environment.ts  
+and ops-basic-angular/src/environments/environment-prod.ts 
+
+create the build.yml
+```
+name: Deploy to S3 Bucket
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      - name: Install dependencies
+        run: npm install
+      - name: Build application
+        run: npm run build --prod
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install awscli --upgrade --user
+      - name: Deploy to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+        run: |
+          aws s3 sync ./dist s3://${{ env.S3_BUCKET_NAME }} --delete
+```
 
 
 TERMINATE THE MACHINE IF YOU WANT... <br>
