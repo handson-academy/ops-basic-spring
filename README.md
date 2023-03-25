@@ -117,6 +117,7 @@ add the following secrets:
 DOCKERHUB_USERNAME = nivitzhaky
 DOCKERHUB_TOKEN = dckr_pat_wNsuA4lJiuBnc4iCsNCmxjCVjc4
 EC2_INSTANCE_PUBLIC_IP = 13.50.235.108
+SSH_PASSWORD = 
 
 ```
 
