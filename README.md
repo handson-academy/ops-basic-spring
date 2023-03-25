@@ -8,7 +8,7 @@ link to presentation -> https://docs.google.com/presentation/d/1fb-fyxiP5T-3Xdn1
 create your own account <br>
 fork https://github.com/handson-academy/ops-basic-spring/ to your own git <br>
 
-## ec2
+## EC2
 create ec2 instance: <br>
 name->testec2, new keypair-> test,  launch instance <br>
 go to inboud rules-> allow all traffic
