@@ -171,7 +171,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_INSTANCE_PUBLIC_IP }}
           username: ec2-user
-          password: ${{ secrets.SSH_PASSWORD }} # store the SSH password as a secret in the repository
+          key: ${{ secrets.SSH_KEY }} # store the SSH password as a secret in the repository
           script: |
             cd /home/ec2-user/ops-basic-spring
             sed -i 's/image: nivitzhaky\/backend:.*/image: nivitzhaky\/backend:v1.0.${{ github.run_number }}/g' /home/ec2-user/ops-basic-spring/docker-compose.yml
