@@ -83,6 +83,7 @@ Jul201789#
 sudo docker tag backend nivitzhaky/backend
 sudo docker push nivitzhaky/backend
 
+git pull
 echo "
 version: \"3\"
 services:
