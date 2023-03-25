@@ -174,8 +174,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }} # store the SSH password as a secret in the repository
           script: |
             cd /home/ec2-user/ops-basic-spring
+	    sudo /usr/local/bin/docker-compose  down || true
             sed -i 's/image: ${{ secrets.DOCKERHUB_USERNAME }}\/backend:.*/image: ${{ secrets.DOCKERHUB_USERNAME }}\/backend:v1.0.${{ github.run_number }}/g' /home/ec2-user/ops-basic-spring/docker-compose.yml
-            sudo /usr/local/bin/docker-compose  down || true
             sudo /usr/local/bin/docker-compose  up -d || true
 ```
 change /src/main/java/com/handson/basic/controller/StudentsController.java <br>
