@@ -70,6 +70,9 @@ cd ops-basic-spring
 mvn clean install
 ```
 there is a new folder called target with basic-0.0.1-SNAPSHOT.jar file
+### CREATE DOCKERHUB USER
+https://dockerhub.com <br>
+create token account setting -> security
 
 ### DOCKERIZE
 ```
