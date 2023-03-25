@@ -59,7 +59,7 @@ sudo yum update
 sudo yum install git
 git clone git@github.com:nivitzhaky/ops-basic-spring.git -b ec2
 ```
-###MAVEN
+### MAVEN
 install maven
 ```
 sudo wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
@@ -181,6 +181,22 @@ check that swagger updates
 create bucket niv.backend.students <br>
 public false<br>
 in properties make static web hosting true<br>
+add this to permissions:
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::niv.backend.students/*"
+        }
+    ]
+}
+```
+
 
 in AIM create a user for the deploy with admin privileges <br>
 create and save the access key
