@@ -45,7 +45,6 @@ ssh-keygen
 cat ./.ssh/id_rsa.pub
 ```
 
-create ec2 branch <br>
 point to local db <br>
 change src/main/resources/application.properties<br>
 ```
@@ -58,7 +57,7 @@ install git
 ```
 sudo yum update
 sudo yum install git
-git clone git@github.com:nivitzhaky/ops-basic-spring.git -b ec2
+git clone git@github.com:nivitzhaky/ops-basic-spring.git 
 ```
 ### MAVEN
 install maven
