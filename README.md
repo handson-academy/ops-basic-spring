@@ -250,7 +250,7 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
         run: |
-          aws s3 sync ./dist s3://${{ env.S3_BUCKET_NAME }} --delete
+          aws s3 sync ./dist/webapp s3://${{ env.S3_BUCKET_NAME }} --delete
 ```
 
 ### DOMAIN
