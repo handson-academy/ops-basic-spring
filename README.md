@@ -4,7 +4,7 @@ https://www.linkedin.com/in/nivitzhaky/<br>
 niv.itzhaky@gmail.com<br>
 0525236451<br>
 
-
+link to presentation -> https://docs.google.com/presentation/d/1fb-fyxiP5T-3Xdn1d7XT1kwAY2jOSOCy1TY5jITSOtw/edit?usp=sharing <br>
 create your own account <br>
 fork https://github.com/handson-academy/ops-basic-spring/ to your own git <br>
 
