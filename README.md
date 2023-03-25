@@ -248,31 +248,7 @@ jobs:
           aws s3 sync ./dist s3://${{ env.S3_BUCKET_NAME }} --delete
 ```
 
-
-TERMINATE THE MACHINE IF YOU WANT... <br>
-
-### RDS
-
-create a database.
-publicly accesible   , master user: admin, masterpassword: Unix11!! <br>
-after created goto inboud rules and add "alltrafic"
-
-```
-
-create database students_stage_ecs;
-CREATE USER 'students_staging_ecs'@'%' IDENTIFIED BY 'students_staging_ecs';
-GRANT all PRIVILEGES on students_stage_ecs to 'students_staging_ecs'@'%';
-GRANT all PRIVILEGES on students_stage_ecs.* to 'students_staging_ecs'@'%';
-
-create database students_stage_eks;
-CREATE USER 'students_staging_eks'@'%' IDENTIFIED BY 'students_staging_eks';
-GRANT all PRIVILEGES on students_stage_eks to 'students_staging_eks'@'%';
-GRANT all PRIVILEGES on students_stage_eks.* to 'students_staging_eks'@'%';
-
-
-```
-
-
+### DOMAIN
 1. buy a domain on https://start.godaddy.com/ <br>
 
 in aws go to: route53:
@@ -294,6 +270,48 @@ ns-1255.awsdns-28.org <br>
 ns-579.awsdns-08.net  <br>
 ns-438.awsdns-54.com  <br>
 ns-1717.awsdns-22.co.uk <br>
+
+
+### Cloudfront
+create distribution<br>
+origin1->
+http only -> 8080-> origin = select load balancer => choose all allowed http methods<br>
+alternate domain name-> ec2-stage.nivitzhaky.com
+Custom SSL certificate - optional -> request new certificate, domainname = nivitzhaky.com, *.nivitzhaky.com<br>
+validate be dns-> make aws create cname
+origin2-> select s3 bucket ->
+Default root object: index.html->legacy access identifiers-> create new OAI->
+
+hosted zones-> domain -> create record ->
+
+cname (give name) ec2-stage.nivitzhaky.com and copy cloudfront distribution url
+
+
+TERMINATE THE MACHINE IF YOU WANT... <br>
+
+
+## ECS
+
+### RDS
+
+create a database.
+publicly accesible   , master user: admin, masterpassword: Unix11!! <br>
+after created goto inboud rules and add "alltrafic"
+
+```
+
+create database students_stage_ecs;
+CREATE USER 'students_staging_ecs'@'%' IDENTIFIED BY 'students_staging_ecs';
+GRANT all PRIVILEGES on students_stage_ecs to 'students_staging_ecs'@'%';
+GRANT all PRIVILEGES on students_stage_ecs.* to 'students_staging_ecs'@'%';
+
+create database students_stage_eks;
+CREATE USER 'students_staging_eks'@'%' IDENTIFIED BY 'students_staging_eks';
+GRANT all PRIVILEGES on students_stage_eks to 'students_staging_eks'@'%';
+GRANT all PRIVILEGES on students_stage_eks.* to 'students_staging_eks'@'%';
+
+
+```
 
 
 ##AIM
@@ -383,7 +401,7 @@ in permissions:
     ]
 }
 ```
-####cloudfront
+### Cloudfront
 create distribution<br>
 origin1->
 http only -> 8080-> origin = select load balancer => choose all allowed http methods<br>
@@ -399,7 +417,7 @@ cname (give name) ecs-stage.nivitzhaky.com and copy cloudfront distribution url
 
 
 
-###EKS
+### EKS
 kubectl install
 ```
 sudo curl --silent --location -o /usr/local/bin/kubectl \
