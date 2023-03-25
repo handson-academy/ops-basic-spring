@@ -124,7 +124,7 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - ec2
+      - master
 
 env:
   APP_VERSION: v1.0.${{ github.run_number }}
