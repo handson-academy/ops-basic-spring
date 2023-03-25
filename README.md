@@ -386,7 +386,7 @@ create a target group-> type=ipaddress -> students-ecs-tg-> port 8080->configure
 (check if needed) after creating service and task go to security group of the service and allow inbound 8080<br>
 when the task goes up we can test by ip:8080/swagger-ui.html
 
-##front repository:
+### front repository:
 create a public s3 bucket: ecs-stage.nivitzhaky.com   (enable static web hosting)
 in permissions:
 ```
