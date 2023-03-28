@@ -276,8 +276,18 @@ ns-579.awsdns-08.net  <br>
 ns-438.awsdns-54.com  <br>
 ns-1717.awsdns-22.co.uk <br>
 
+### Load balancer
+go to certificate manager domainname= nivitzhaky.com + *.nivitzhaky.com -> validate be dns-> make aws create cname<br>
+classic load balancer -> ec2-students-lb -> https -> 443 -> http -> 8080 -> choose certificate-> ping path /actuator/health -> add testec2<br>
+port 8080 <br>
+create a target group-> type=ipaddress -> students-ec2-tg-> port 8080->configure healthcheck:  /actuator/health-> next-> copy private ip from ec2 ports=8080-> include as pending <br>
 
 ### Cloudfront
+in the project change the url in 
+environment.prod.ts and 
+environment.ts <br>
+to: ec2-stage.nivitzhaky.com
+
 create distribution<br>
 origin1->
 http only -> 8080-> origin = select load balancer => choose all allowed http methods<br>
@@ -287,10 +297,10 @@ validate be dns-> make aws create cname
 origin2-> select s3 bucket ->
 Default root object: index.html->legacy access identifiers-> create new OAI->
 
+
 hosted zones-> domain -> create record ->
 
 cname (give name) ec2-stage.nivitzhaky.com and copy cloudfront distribution url
-
 
 TERMINATE THE MACHINE IF YOU WANT... <br>
 
