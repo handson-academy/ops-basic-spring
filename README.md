@@ -111,6 +111,42 @@ sudo  docker-compose   up -d
 # test http://[ip address]:8080/swagger-ui.html
 sudo docker-compose   down
 ```
+### TEST FRONTEND
+```
+cd ~
+git clone git@github.com:handson-academy/ops-basic-angular.git
+cd ops-basic-angular
+
+echo "
+export const environment = {
+  production: true,
+  url: 'http://13.50.247.173:8080/api' 
+};
+" > src/environments/environment.prod.ts
+
+echo "
+export const environment = {
+  production: false,
+  url: 'http://13.50.247.173:8080/api' 
+};
+" > src/environments/environment.ts
+
+
+sudo docker run -p 3000:3000 -v $(pwd):/app  -d node:14 tail -f /dev/null
+sudo docker ps
+sudo docker exec -it [containerid]  /bin/bash
+
+cd /app
+npm install
+npm run build --prod
+
+
+npm install -g http-server
+http-server /app/dist/webapp -p 3000 &
+
+```
+test on http://13.50.247.173:3000
+
 ### DOCKER AUTOMATION
 add the following secrets:
 ```
