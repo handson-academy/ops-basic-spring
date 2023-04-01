@@ -142,7 +142,7 @@ npm run build --prod
 
 
 npm install -g http-server
-http-server /app/dist/webapp -p 3000 &
+nohup http-server /app/dist/webapp -p 3000 &
 
 ```
 test on http://13.50.247.173:3000
