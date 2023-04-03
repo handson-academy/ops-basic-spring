@@ -313,11 +313,9 @@ ns-579.awsdns-08.net  <br>
 ns-438.awsdns-54.com  <br>
 ns-1717.awsdns-22.co.uk <br>
 
-### Load balancer
-go to certificate manager domainname= nivitzhaky.com + *.nivitzhaky.com -> validate be dns-> make aws create cname<br>
-classic load balancer -> ec2-students-lb -> https -> 443 -> http -> 8080 -> choose certificate-> ping path /actuator/health -> add testec2<br>
-port 8080 <br>
-create a target group-> type=ipaddress -> students-ec2-tg-> port 8080->configure healthcheck:  /actuator/health-> next-> copy private ip from ec2 ports=8080-> include as pending <br>
+### Domain for ec2
+create A record -> [ec2 ip] -> ec2-raw.nivitzhaky.com
+
 
 ### Cloudfront
 in the project change the url in 
