@@ -327,7 +327,7 @@ create distribution<br>
 origin1-> select s3 bucket -> use website endpoint -> caching disabled <br>
 alternate domain: ec2-stage.nivitzhaky.com -> custom ssl : request certificate<br>
 fully qualified name:  nivitzhaky.com , *.nivitzhaky.com <br>
-validate with dns
+validate with dns <br> <br> 
 origin2->
 http only -> 8080-> origin = select load balancer => choose all allowed http methods<br>
 alternate domain name-> ec2-stage.nivitzhaky.com
