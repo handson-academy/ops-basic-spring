@@ -369,7 +369,7 @@ GRANT all PRIVILEGES on students_stage_eks.* to 'students_staging_eks'@'%';
 ```
 
 
-##AIM
+### AIM
 go to AIM and create a user with programatic access and console sign in (admin credentials)
 ```
 accountid = 
@@ -393,7 +393,7 @@ CI_AWS_ECS_SERVICE=ecs-stage-service
 ```
 
 
-###Parameter store
+### Parameter store
 ```
 #backend_url_ecs='https:\/\/ecs-stage.nivitzhaky.com\/api'
 #backend_url_eks=https:\/\/eks-stage.nivitzhaky.com\/api
@@ -404,11 +404,11 @@ students_staging_eks=jdbc:mysql:\/\/database-2.cmyyngkp9f7o.us-east-1.rds.amazon
 students_staging_eks_user=students_staging_eks
 students_staging_eks_password=students_staging_eks
 ```
-###ECR
+### ECR
 create an ECR, call it students
 
 
-##ECS
+### ECS
 update ECR in the gitlab.ci<br>
 create taskdefinition ->  ecs-task-definition <br>
 containername ->student-ecs-container<br>
