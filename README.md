@@ -327,7 +327,9 @@ create distribution<br>
 origin1-> select s3 bucket -> use website endpoint -> caching disabled <br>
 alternate domain: ec2-stage.nivitzhaky.com -> custom ssl : request certificate<br>
 fully qualified name:  nivitzhaky.com , *.nivitzhaky.com <br>
-validate with dns <br> <br> 
+validate with dns <br>
+cname (give name) ec2-stage.nivitzhaky.com and copy cloudfront distribution url<br>
+<br><br>
 origin2->
 http only -> 8080-> origin = ec2-raw.nivitzhaky.com => choose all allowed http methods<br>
 alternate domain name-> ec2-stage.nivitzhaky.com<br>
@@ -337,7 +339,7 @@ Custom SSL certificate - optional -> nivitzhaky.com
 
 hosted zones-> domain -> create record ->
 
-cname (give name) ec2-stage.nivitzhaky.com and copy cloudfront distribution url
+
 
 TERMINATE THE MACHINE IF YOU WANT... <br>
 
