@@ -112,6 +112,7 @@ sudo  docker-compose   up -d
 sudo docker-compose   down
 ```
 ### TEST FRONTEND
+https://github.com/handson-academy/ops-basic-angular
 ```
 cd ~
 git clone git@github.com:handson-academy/ops-basic-angular.git
