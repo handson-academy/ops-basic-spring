@@ -329,10 +329,9 @@ alternate domain: ec2-stage.nivitzhaky.com -> custom ssl : request certificate<b
 fully qualified name:  nivitzhaky.com , *.nivitzhaky.com <br>
 validate with dns <br> <br> 
 origin2->
-http only -> 8080-> origin = select load balancer => choose all allowed http methods<br>
-alternate domain name-> ec2-stage.nivitzhaky.com
-Custom SSL certificate - optional -> request new certificate, domainname = nivitzhaky.com, *.nivitzhaky.com<br>
-validate be dns-> make aws create cname
+http only -> 8080-> origin = ec2-raw.nivitzhaky.com => choose all allowed http methods<br>
+alternate domain name-> ec2-stage.nivitzhaky.com<br>
+Custom SSL certificate - optional -> nivitzhaky.com
 
 
 
