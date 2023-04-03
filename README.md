@@ -324,13 +324,16 @@ environment.ts <br>
 to: 'https://ec2-stage.nivitzhaky.com/api'
 
 create distribution<br>
-origin1->
+origin1-> select s3 bucket -> use website endpoint -> caching disabled <br>
+alternate domain: ec2-stage.nivitzhaky.com -> custom ssl : request certificate<br>
+fully qualified name:  nivitzhaky.com , *.nivitzhaky.com <br>
+validate with dns
+origin2->
 http only -> 8080-> origin = select load balancer => choose all allowed http methods<br>
 alternate domain name-> ec2-stage.nivitzhaky.com
 Custom SSL certificate - optional -> request new certificate, domainname = nivitzhaky.com, *.nivitzhaky.com<br>
 validate be dns-> make aws create cname
-origin2-> select s3 bucket ->
-Default root object: index.html->legacy access identifiers-> create new OAI->
+
 
 
 hosted zones-> domain -> create record ->
