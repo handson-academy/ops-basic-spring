@@ -334,9 +334,11 @@ hosted zones-> domain -> create record ->
 origin2->
 http only -> 8080-> origin = ec2-raw.nivitzhaky.com => choose all allowed http methods<br>
 alternate domain name-> ec2-stage.nivitzhaky.com<br>
-Custom SSL certificate - optional -> nivitzhaky.com
-
-
+Custom SSL certificate - optional -> nivitzhaky.com<br>
+<br>
+behaviours: <br>
+api/* -> allowed methods all -> caching all <br>
+* -> leave default
 
 
 
