@@ -321,7 +321,7 @@ create A record -> [ec2 ip] -> ec2-raw.nivitzhaky.com
 in the project change the url in 
 environment.prod.ts and 
 environment.ts <br>
-to: ec2-stage.nivitzhaky.com
+to: 'ec2-stage.nivitzhaky.com/api'
 
 create distribution<br>
 origin1->
