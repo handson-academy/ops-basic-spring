@@ -456,7 +456,7 @@ publish:
     - sed -i "s/db_url/$DB_URL/" src/main/resources/application.properties
     - sed -i "s/db_username/$DB_USER/" src/main/resources/application.properties
     - sed -i "s/db_password/$DB_PASSWORD/" src/main/resources/application.properties
-    - yum install -y maven
+    - yum install -y maven3.6
     - amazon-linux-extras install docker 
     - aws --version
     - docker --version
