@@ -437,7 +437,7 @@ ci-settings.xml
 variables:
   DOCKER_REGISTRY: 308312479356.dkr.ecr.eu-north-1.amazonaws.com
   AWS_DEFAULT_REGION: eu-north-1
-  APP_NAME: students
+  APP_NAME: students-ecs
   DOCKER_HOST: tcp://docker:2375
 
 publish:
