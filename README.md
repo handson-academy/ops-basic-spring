@@ -380,6 +380,13 @@ password=Unix11!@
 ```
 
 
+### GITLAB 
+create account <br>
+import https://github.com/handson-academy/ops-basic-spring.git <br>
+create branch ecs
+
+### GITLAB variables
+
 
 on gitlab, backend service. <br>
 goto: settings -> ci/cd <br>
