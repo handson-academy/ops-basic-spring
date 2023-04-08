@@ -410,7 +410,7 @@ students_staging_eks_user=students_staging_eks
 students_staging_eks_password=students_staging_eks
 ```
 ### ECR
-create an ECR, call it students
+create an ECR, call it students-ecs
 
 ### automation files
 ci-settings.xml
