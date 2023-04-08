@@ -402,8 +402,6 @@ CI_AWS_ECS_SERVICE=ecs-stage-service
 
 ### Parameter store
 ```
-#backend_url_ecs='https:\/\/ecs-stage.nivitzhaky.com\/api'
-#backend_url_eks=https:\/\/eks-stage.nivitzhaky.com\/api
 students_staging_ecs=jdbc:mysql:\/\/database-2.cmyyngkp9f7o.eu-north-1.rds.amazonaws.com:3306\/students_stage_ecs
 students_staging_ecs_user=students_staging_ecs
 students_staging_ecs_password=students_staging_ecs
