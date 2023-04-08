@@ -435,18 +435,24 @@ ci-settings.xml
 .gitlab-ci.yml
 ```
 variables:
-  DOCKER_REGISTRY: 308312479356.dkr.ecr.eu-north-1.amazonaws.com
+  DOCKER_REGISTRY: [ecr-uri]
   AWS_DEFAULT_REGION: eu-north-1
   APP_NAME: students-ecs
   DOCKER_HOST: tcp://docker:2375
 
 publish:
   image: 
-    name: amazon/aws-cli:latest
+    name: maven:3.8.1-openjdk-11
     entrypoint: [""]
   services:
     - docker:dind
   before_script:
+    - apt-get update
+    - apt-get install -y python3-pip
+    - pip3 install awscli
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - aws configure set region $AWS_DEFAULT_REGION
     - export DB_URL=$(aws ssm get-parameter --name "students_staging_ecs" --query "Parameter.Value" --output text)
     - echo $DB_URL
     - export DB_PASSWORD=$(aws ssm get-parameter --name "students_staging_ecs_password" --query "Parameter.Value" --output text)
@@ -456,14 +462,15 @@ publish:
     - sed -i "s/db_url/$DB_URL/" src/main/resources/application.properties
     - sed -i "s/db_username/$DB_USER/" src/main/resources/application.properties
     - sed -i "s/db_password/$DB_PASSWORD/" src/main/resources/application.properties
-    - yum install -y maven3.6
-    - amazon-linux-extras install docker 
+    - apt-get update
+    - apt-get install -y curl
+    - curl -fsSL https://get.docker.com | sh
     - aws --version
     - docker --version
     - mvn --version
   script:
     - mvn clean install
-    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $DOCKER_REGISTRY
+    - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $DOCKER_REGISTRY
     - docker build -t $DOCKER_REGISTRY/$APP_NAME:latest . 
     - docker push $DOCKER_REGISTRY/$APP_NAME:latest      
 
