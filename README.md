@@ -386,7 +386,7 @@ goto: settings -> ci/cd <br>
 expand variables, update: (unprotect the vars)
 ```
 AWS_ACCESS_KEY_ID=
-AWS_DEFAULT_REGION=us-east-1
+AWS_DEFAULT_REGION=eu-north-1
 AWS_SECRET_ACCESS_KEY=
 CI_AWS_ECS_CLUSTER=ecs-stage-cluster
 CI_AWS_ECS_SERVICE=ecs-stage-service
@@ -397,10 +397,10 @@ CI_AWS_ECS_SERVICE=ecs-stage-service
 ```
 #backend_url_ecs='https:\/\/ecs-stage.nivitzhaky.com\/api'
 #backend_url_eks=https:\/\/eks-stage.nivitzhaky.com\/api
-students_staging_ecs=jdbc:mysql:\/\/database-2.cmyyngkp9f7o.us-east-1.rds.amazonaws.com:3306\/students_stage_ecs
+students_staging_ecs=jdbc:mysql:\/\/database-2.cmyyngkp9f7o.eu-north-1.rds.amazonaws.com:3306\/students_stage_ecs
 students_staging_ecs_user=students_staging_ecs
 students_staging_ecs_password=students_staging_ecs
-students_staging_eks=jdbc:mysql:\/\/database-2.cmyyngkp9f7o.us-east-1.rds.amazonaws.com:3306\/students_stage_eks
+students_staging_eks=jdbc:mysql:\/\/database-2.cmyyngkp9f7o.eu-north-1.rds.amazonaws.com:3306\/students_stage_eks
 students_staging_eks_user=students_staging_eks
 students_staging_eks_password=students_staging_eks
 ```
@@ -589,7 +589,7 @@ eksctl create cluster -f eks.yaml
 ## EKS deploy
 in gitlab go to eks2 branch -> springboot-> values.yaml put the ecr adress<br>
 in gitlab-ci.yml<br>
-change registry url and app name to: 416790849346.dkr.ecr.us-east-1.amazonaws.com and students_staging_eks<br>
+change registry url and app name to: 416790849346.dkr.ecr.eu-north-1.amazonaws.com and students_staging_eks<br>
 adjust the line of assume role: arn:aws:iam::416790849346:role/eks-admin <br>
 go to IAM->roles-> eks-admin->edit and add
 ```
