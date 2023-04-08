@@ -459,9 +459,9 @@ publish:
     - echo $DB_PASSWORD
     - export DB_USER=$(aws ssm get-parameter --name "students_staging_ecs_user" --query "Parameter.Value" --output text)
     - echo $DB_USER
-    - sed -i "s/db_url/$DB_URL/" src/main/resources/application.properties
-    - sed -i "s/db_username/$DB_USER/" src/main/resources/application.properties
-    - sed -i "s/db_password/$DB_PASSWORD/" src/main/resources/application.properties
+    - sed -i "s#spring.datasource.url=*#spring.datasource.url=${DB_URL}#g"  src/main/resources/application.properties
+    - sed -i "s#spring.datasource.username=*#spring.datasource.username=${DB_USER}#g"  src/main/resources/application.properties
+    - sed -i "s#spring.datasource.password=*#spring.datasource.url=${DB_PASSWORD}#g"  src/main/resources/application.properties
     - apt-get update
     - apt-get install -y curl
     - curl -fsSL https://get.docker.com | sh
