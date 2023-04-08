@@ -412,9 +412,66 @@ students_staging_eks_password=students_staging_eks
 ### ECR
 create an ECR, call it students
 
+### automation files
+ci-settings.xml
+```
+<settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
+  <servers>
+    <server>
+      <id>gitlab-maven</id>
+      <configuration>
+        <httpHeaders>
+          <property>
+            <name>Job-Token</name>
+            <value>${CI_JOB_TOKEN}</value>
+          </property>
+        </httpHeaders>
+      </configuration>
+    </server>
+  </servers>
+</settings>
+```
+.gitlab-ci.yml
+```
+variables:
+  DOCKER_REGISTRY: 308312479356.dkr.ecr.eu-north-1.amazonaws.com
+  AWS_DEFAULT_REGION: eu-northt-1
+  APP_NAME: students
+  DOCKER_HOST: tcp://docker:2375
+
+publish:
+  image: 
+    name: amazon/aws-cli:latest
+    entrypoint: [""]
+  services:
+    - docker:dind
+  before_script:
+    - export DB_URL=$(aws ssm get-parameter --name "students_staging_ecs" --query "Parameter.Value" --output text)
+    - echo $DB_URL
+    - export DB_PASSWORD=$(aws ssm get-parameter --name "students_staging_ecs_password" --query "Parameter.Value" --output text)
+    - echo $DB_PASSWORD
+    - export DB_USER=$(aws ssm get-parameter --name "students_staging_ecs_user" --query "Parameter.Value" --output text)
+    - echo $DB_USER
+    - sed -i "s/db_url/$DB_URL/" src/main/resources/application.properties
+    - sed -i "s/db_username/$DB_USER/" src/main/resources/application.properties
+    - sed -i "s/db_password/$DB_PASSWORD/" src/main/resources/application.properties
+    - yum install -y maven
+    - amazon-linux-extras install docker 
+    - aws --version
+    - docker --version
+    - mvn --version
+  script:
+    - mvn clean install
+    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $DOCKER_REGISTRY
+    - docker build -t $DOCKER_REGISTRY/$APP_NAME:latest . 
+    - docker push $DOCKER_REGISTRY/$APP_NAME:latest      
+
+
+```
+
 
 ### ECS
-update ECR in the gitlab.ci<br>
 create taskdefinition ->  ecs-task-definition <br>
 containername ->student-ecs-container<br>
 imageuri-> copy from ecr table<br>
@@ -440,6 +497,30 @@ create a target group-> type=ipaddress -> students-ecs-tg-> port 8080->configure
 
 (check if needed) after creating service and task go to security group of the service and allow inbound 8080<br>
 when the task goes up we can test by ip:8080/swagger-ui.html
+
+### ADD ECS DEPLOY to GITLAB
+add to .gitlab-ci.yml 
+```
+deploy:
+  image: 
+    name: docker:19.03.10
+    entrypoint: [""]
+  services:
+    - docker:dind
+  before_script:
+    - apk add --no-cache curl jq python py-pip
+    - pip install awscli
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - aws configure set region $AWS_DEFAULT_REGION
+    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $DOCKER_REGISTRY
+  stage: deploy
+  script:
+    - echo $REPOSITORY_URL:$IMAGE_TAG 
+    - echo "Updating the service..."
+    - aws ecs update-service --region "${AWS_DEFAULT_REGION}" --cluster "${CI_AWS_ECS_CLUSTER}" --service "${CI_AWS_ECS_SERVICE}"  --force-new-deployment
+
+```
 
 ### front repository:
 create a public s3 bucket: ecs-stage.nivitzhaky.com   (enable static web hosting)
