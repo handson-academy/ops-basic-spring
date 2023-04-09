@@ -435,7 +435,7 @@ ci-settings.xml
 .gitlab-ci.yml
 ```
 variables:
-  DOCKER_REGISTRY: [ecr-uri]
+  DOCKER_REGISTRY: [ecr url - no /]
   AWS_DEFAULT_REGION: eu-north-1
   APP_NAME: students-ecs
   DOCKER_HOST: tcp://docker:2375
@@ -472,7 +472,7 @@ publish:
     - mvn clean install
     - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $DOCKER_REGISTRY
     - docker build -t $DOCKER_REGISTRY/$APP_NAME:latest . 
-    - docker push $DOCKER_REGISTRY/$APP_NAME:latest      
+    - docker push $DOCKER_REGISTRY/$APP_NAME:latest  
 
 
 ```
