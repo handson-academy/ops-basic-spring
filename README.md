@@ -459,9 +459,9 @@ publish:
     - echo $DB_PASSWORD
     - export DB_USER=$(aws ssm get-parameter --name "students_staging_ecs_user" --query "Parameter.Value" --output text)
     - echo $DB_USER
-    - sed -i "s#spring.datasource.url=*#spring.datasource.url=${DB_URL}#g"  src/main/resources/application.properties
-    - sed -i "s#spring.datasource.username=*#spring.datasource.username=${DB_USER}#g"  src/main/resources/application.properties
-    - sed -i "s#spring.datasource.password=*#spring.datasource.url=${DB_PASSWORD}#g"  src/main/resources/application.properties
+    - sed -i "s#spring.datasource.url=.*#spring.datasource.url=${DB_URL}#g"  src/main/resources/application.properties
+    - sed -i "s#spring.datasource.username=.*#spring.datasource.username=${DB_USER}#g"  src/main/resources/application.properties
+    - sed -i "s#spring.datasource.password=.*#spring.datasource.url=${DB_PASSWORD}#g"  src/main/resources/application.properties
     - apt-get update
     - apt-get install -y curl
     - curl -fsSL https://get.docker.com | sh
@@ -487,22 +487,15 @@ cpu - 1, memory- 4 <br>
 configure healthcheck:  CMD-SHELL, curl -f http://localhost:8080/actuator/health <br>
 
 
-
+create cluster: ecs-stage-cluster <br>
 create a service: <br>
 faragate-> service-> family=ecs-task-definition->servicename = ecs-stage-service <br>
 
 
-create applicaiton load balancer (ec2 load balancer)
+load balancing -> create applicaiton load balancer -> springboot-lb -> port 8080 <br>
+create a target group->  students-ecs-tg-> healthcheck:  /actuator/health -> grace 120 sec <br>
 
 
-springboot-lb
-define vpc (default)
-defive availability zones (at least 3)
-port 8080 <br>
-create a target group-> type=ipaddress -> students-ecs-tg-> port 8080->configure healthcheck:  /actuator/health-> next-> copy private ip from ecs ports=8080-> include as pending <br>
-
-
-(check if needed) after creating service and task go to security group of the service and allow inbound 8080<br>
 when the task goes up we can test by ip:8080/swagger-ui.html
 
 ### ADD ECS DEPLOY to GITLAB
@@ -530,6 +523,7 @@ deploy:
 ```
 
 ### front repository:
+gitlag import https://github.com/handson-academy/ops-basic-angular.git <br>
 create a public s3 bucket: ecs-stage.nivitzhaky.com   (enable static web hosting)
 in permissions:
 ```
