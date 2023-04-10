@@ -654,11 +654,15 @@ rm -vf ${HOME}/.aws/credentials
 (not needed done with ui)aws sts assume-role --role-arn "arn:aws:iam::416790849346:role/eks-admin" --role-session-name A
 go to top right -> manage ec2 instance -> actions -> security -> modify aim role -> select eks-admin
 
+```
 aws kms create-alias --alias-name alias/eks --target-key-id $(aws kms create-key --query KeyMetadata.Arn --output text)
 export MASTER_ARN=$(aws kms describe-key --key-id alias/eks --query KeyMetadata.Arn --output text)
 echo "export MASTER_ARN=${MASTER_ARN}" | tee -a ~/.bash_profile
+```
 
-# install eks-ctl
+### install eks-ctl
+```
+
 curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
 
 sudo mv -v /tmp/eksctl /usr/local/bin
