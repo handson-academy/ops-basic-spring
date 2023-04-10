@@ -593,7 +593,13 @@ cname (give name) ecs-stage.nivitzhaky.com and copy cloudfront distribution url
 
 
 
-### EKS
+## EKS
+
+### Cloud 9 
+create a cloud 9 computer call it students
+
+### INSTALL KUBERNETES
+
 kubectl install
 ```
 sudo curl --silent --location -o /usr/local/bin/kubectl \
