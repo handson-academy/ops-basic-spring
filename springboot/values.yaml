@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: 308312479356.dkr.ecr.us-east-1.amazonaws.com/students_staging_eks
+  repository: [ecr uri]/students_eks
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
