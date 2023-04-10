@@ -513,7 +513,7 @@ deploy:
     - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
     - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
     - aws configure set region $AWS_DEFAULT_REGION
-    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $DOCKER_REGISTRY
+    - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin $DOCKER_REGISTRY
   stage: deploy
   script:
     - echo $REPOSITORY_URL:$IMAGE_TAG 
@@ -523,7 +523,7 @@ deploy:
 ```
 
 ### front repository:
-gitlag import https://github.com/handson-academy/ops-basic-angular.git <br>
+gitlab import https://github.com/handson-academy/ops-basic-angular.git <br>
 create a public s3 bucket: ecs-stage.nivitzhaky.com   (enable static web hosting)
 in permissions:
 ```
@@ -542,6 +542,40 @@ in permissions:
         }
     ]
 }
+```
+
+### GITLAB front:
+env variable -> BACKEND_URL_ECS -> https://ecs-stage.nivitzhaky.com/api<br><br>
+
+.gitlab-ci.yml
+```
+build stage:  
+   image: doctrine/nodejs-aws-cli:v10.19
+   stage: build  
+   only:    
+      - ecs  
+   script:
+      - export BACKEND_URL_ECS=$(aws ssm get-parameter --name "backend_url_ecs" --query "Parameter.Value" --output text --region "eu-north-1")
+      - echo $BACKEND_URL_ECS
+      - sed -i "s/backend_url/$BACKEND_URL_ECS/" src/environments/environment.ts
+      - sed -i "s/backend_url/$BACKEND_URL_ECS/" src/environments/environment.prod.ts    
+      - npm install --save --legacy-peer-deps    
+      # Build App    
+      - npm run build 
+   artifacts:    
+      paths:      
+         # Build folder      
+         - dist/    
+      expire_in: 1 hour
+
+deploy stage:  
+   image: python:latest  
+   stage: deploy  
+   only:    
+      - ecs  
+   script:    
+      - pip install awscli    
+      - aws s3 sync ./dist/webapp/ s3://ecs-stage.nivitzhaky.com   
 ```
 ### Cloudfront
 create distribution<br>
