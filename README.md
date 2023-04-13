@@ -718,9 +718,46 @@ EOF
 
 eksctl create cluster -f eks.yaml
 ```
+### MANUAL TEST
+```
+git clone https://github.com/handson-academy/ops-basic-spring
+kubectl get pods
+manually copy the templates and replace values
+kubectl apply -f deployment.yaml 
+kubectl get pods
+kubectl apply -f service.yaml
+kubectl get service
+kubectl logs [podid]
+kubectl exec -it [podid] -- /bin/bash
+kubectl describe service springboot-service
+kubectl get service springboot-service -o yaml
+kubectl delete -f deployment.yaml 
+kubectl delete -f service.yaml 
+```
+
+### HELM TEST
+```
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
+chmod 700 get_helm.sh
+./get_helm.sh
+
+update ecr in values.yaml
+
+helm upgrade -i springboot springboot/ --values springboot/values.yaml
+
+helm repo add my-repo https://charts.bitnami.com/bitnami
+helm search repo postgres
+helm show values my-repo/postgresql > postgres-values.yaml
+helm install my-postgres my-repo/postgresql -f postgres-values.yaml
+helm list
+kubectl get pods
+helm delete my-postgres
+helm delete springboot
+
+```
 
 ## EKS deploy
-in gitlab go to eks2 branch -> springboot-> values.yaml put the ecr adress<br>
+in gitlab go to eks branch -> springboot-> values.yaml put the ecr adress<br>
 in gitlab-ci.yml<br>
 change registry url and app name to: 416790849346.dkr.ecr.eu-north-1.amazonaws.com and students_staging_eks<br>
 adjust the line of assume role: arn:aws:iam::416790849346:role/eks-admin <br>
