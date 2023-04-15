@@ -734,6 +734,7 @@ kubectl logs [podid]
 kubectl exec -it [podid] -- /bin/bash
 kubectl describe service springboot-service
 kubectl get service springboot-service -o yaml
+kubectl scale deployment   springboot-deployment   --replicas=1
 kubectl delete -f deployment.yaml 
 kubectl delete -f service.yaml 
 ```
@@ -814,26 +815,28 @@ publish:
     - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
     - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
     - aws configure set region $AWS_DEFAULT_REGION
-    - export DB_URL=$(aws ssm get-parameter --name "students_staging_ecs" --query "Parameter.Value" --output text)
+    - export DB_URL=$(aws ssm get-parameter --name "students_staging_eks" --query "Parameter.Value" --output text)
     - echo $DB_URL
-    - export DB_PASSWORD=$(aws ssm get-parameter --name "students_staging_ecs_password" --query "Parameter.Value" --output text)
+    - export DB_PASSWORD=$(aws ssm get-parameter --name "students_staging_eks_password" --query "Parameter.Value" --output text)
     - echo $DB_PASSWORD
-    - export DB_USER=$(aws ssm get-parameter --name "students_staging_ecs_user" --query "Parameter.Value" --output text)
+    - export DB_USER=$(aws ssm get-parameter --name "students_staging_eks_user" --query "Parameter.Value" --output text)
     - echo $DB_USER
     - sed -i "s#spring.datasource.url=.*#spring.datasource.url=${DB_URL}#g"  src/main/resources/application.properties
     - sed -i "s#spring.datasource.username=.*#spring.datasource.username=${DB_USER}#g"  src/main/resources/application.properties
-    - sed -i "s#spring.datasource.password=.*#spring.datasource.url=${DB_PASSWORD}#g"  src/main/resources/application.properties
+    - sed -i "s#spring.datasource.password=.*#spring.datasource.password=${DB_PASSWORD}#g"  src/main/resources/application.properties
+    - cat src/main/resources/application.properties
     - apt-get update
     - apt-get install -y curl
     - curl -fsSL https://get.docker.com | sh
     - aws --version
     - docker --version
     - mvn --version
+
   script:
     - mvn clean install
     - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $DOCKER_REGISTRY
-    - docker build -t $DOCKER_REGISTRY/$APP_NAME:latest . 
-    - docker push $DOCKER_REGISTRY/$APP_NAME:latest  
+    - docker build -t $DOCKER_REGISTRY/$APP_NAME:$CI_PIPELINE_IID . 
+    - docker push $DOCKER_REGISTRY/$APP_NAME:$CI_PIPELINE_IID  
 
 deploy_to_eks:
   stage: deploy
@@ -855,6 +858,8 @@ deploy_to_eks:
   script:
     - sed -i "s/latest/$CI_PIPELINE_IID/" springboot/values.yaml
     - helm upgrade -i springboot springboot/ --values springboot/values.yaml
+
+
 
 
 ```
