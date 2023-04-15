@@ -702,7 +702,7 @@ availabilityZones: ["${AZS[0]}", "${AZS[1]}"]
 managedNodeGroups:
 - name: nodegroup
   desiredCapacity: 2
-  instanceType: t3.small
+  instanceType: t3.medium
   ssh:
     enableSsm: true
 
@@ -718,6 +718,9 @@ EOF
 
 eksctl create cluster -f eks.yaml
 ```
+### EKS ECR 
+create ecr and call it students_eks
+
 ### MANUAL TEST
 ```
 git clone https://github.com/handson-academy/ops-basic-spring
@@ -745,34 +748,118 @@ update ecr in values.yaml
 
 helm upgrade -i springboot springboot/ --values springboot/values.yaml
 
-helm repo add my-repo https://charts.bitnami.com/bitnami
+go to https://artifacthub.io/packages/helm/groundhog2k/postgres
+
+helm repo add groundhog2k  https://groundhog2k.github.io/helm-charts/
 helm search repo postgres
-helm show values my-repo/postgresql > postgres-values.yaml
-helm install my-postgres my-repo/postgresql -f postgres-values.yaml
+helm show values groundhog2k/postgres > postgres-values.yaml
+helm install my-postgres groundhog2k/postgres -f postgres-values.yaml
 helm list
 kubectl get pods
-helm delete my-postgres
-helm delete springboot
+
 
 ```
+### connect to cluster
+install kubectl if you want<br>
+cat /home/ec2-user/.kube/config <br>
+create the same file on your machine <br>
+install aws cli -> https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html<br?
+add key and secret key via aws configure<br> 
+aws eks update-kubeconfig --name eks-students --region eu-north-1  --role-arn arn:aws:iam::304303674048:role/eks-admin <br>
+install and run lens https://k8slens.dev/<br>
 
-## EKS deploy
+### delete helms
+```
+helm delete springboot
+helm delete my-postgres
+```
+
+### EKS auto deploy
 in gitlab go to eks branch -> springboot-> values.yaml put the ecr adress<br>
-in gitlab-ci.yml<br>
 change registry url and app name to: 416790849346.dkr.ecr.eu-north-1.amazonaws.com and students_staging_eks<br>
 adjust the line of assume role: arn:aws:iam::416790849346:role/eks-admin <br>
-go to IAM->roles-> eks-admin->edit and add
+go to IAM->roles-> eks-admin->trust relationships -> edit trust policies and add
 ```
-		{
+        		{
 			"Effect": "Allow",
 			"Principal": {
-				"AWS": "arn:aws:iam::308312479356:user/academy"
+				"AWS": "arn:aws:iam::304303674048:user/academy"
 			},
 			"Action": "sts:AssumeRole"
 		}
 ```
-add "UNPROTECTED" "FILE" variable called KUBECONFIG
-with value of cat /home/ec2-user/.kube/config
+### add kubeconfig to gitlab
+add "UNPROTECTED" "FILE" variable called KUBECONFIG <br>
+with value of cat /home/ec2-user/.kube/config <br>
+
+create gitlab-ci.yaml
+```
+variables:
+  DOCKER_REGISTRY: 304303674048.dkr.ecr.eu-north-1.amazonaws.com
+  AWS_DEFAULT_REGION: eu-north-1
+  APP_NAME: students_eks
+  DOCKER_HOST: tcp://docker:2375
+  EKS_ROLE: arn:aws:iam::304303674048:role/eks-admin
+
+publish:
+  image: 
+    name: maven:3.8.1-openjdk-11
+    entrypoint: [""]
+  services:
+    - docker:dind
+  before_script:
+    - apt-get update
+    - apt-get install -y python3-pip
+    - pip3 install awscli
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - aws configure set region $AWS_DEFAULT_REGION
+    - export DB_URL=$(aws ssm get-parameter --name "students_staging_ecs" --query "Parameter.Value" --output text)
+    - echo $DB_URL
+    - export DB_PASSWORD=$(aws ssm get-parameter --name "students_staging_ecs_password" --query "Parameter.Value" --output text)
+    - echo $DB_PASSWORD
+    - export DB_USER=$(aws ssm get-parameter --name "students_staging_ecs_user" --query "Parameter.Value" --output text)
+    - echo $DB_USER
+    - sed -i "s#spring.datasource.url=.*#spring.datasource.url=${DB_URL}#g"  src/main/resources/application.properties
+    - sed -i "s#spring.datasource.username=.*#spring.datasource.username=${DB_USER}#g"  src/main/resources/application.properties
+    - sed -i "s#spring.datasource.password=.*#spring.datasource.url=${DB_PASSWORD}#g"  src/main/resources/application.properties
+    - apt-get update
+    - apt-get install -y curl
+    - curl -fsSL https://get.docker.com | sh
+    - aws --version
+    - docker --version
+    - mvn --version
+  script:
+    - mvn clean install
+    - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $DOCKER_REGISTRY
+    - docker build -t $DOCKER_REGISTRY/$APP_NAME:latest . 
+    - docker push $DOCKER_REGISTRY/$APP_NAME:latest  
+
+deploy_to_eks:
+  stage: deploy
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/aws-base:latest
+  before_script:
+    - export KUBECTL_VERSION=v1.25
+    - curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.25.2/2021-07-05/bin/linux/amd64/kubectl
+    - chmod +x ./kubectl
+    - mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+    - curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
+    - chmod 700 get_helm.sh
+    - ./get_helm.sh
+    - aws --version
+    - aws sts assume-role --role-arn "$EKS_ROLE" --role-session-name AWSCLI-Session
+    - aws eks update-kubeconfig --name eks-students --region $AWS_DEFAULT_REGION --role-arn $EKS_ROLE
+    - aws sts get-caller-identity
+    
+ 
+  script:
+    - sed -i "s/latest/$CI_PIPELINE_IID/" springboot/values.yaml
+    - helm upgrade -i springboot springboot/ --values springboot/values.yaml
+
+
+```
+
+
 
 
 
