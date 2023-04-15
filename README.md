@@ -760,6 +760,17 @@ kubectl get pods
 
 
 ```
+### allow role for user academy
+go to IAM->roles-> eks-admin->trust relationships -> edit trust policies and add
+```
+        		{
+			"Effect": "Allow",
+			"Principal": {
+				"AWS": "arn:aws:iam::304303674048:user/academy"
+			},
+			"Action": "sts:AssumeRole"
+		}
+```
 ### connect to cluster
 install kubectl if you want<br>
 cat /home/ec2-user/.kube/config <br>
@@ -779,16 +790,7 @@ helm delete my-postgres
 in gitlab go to eks branch -> springboot-> values.yaml put the ecr adress<br>
 change registry url and app name to: 416790849346.dkr.ecr.eu-north-1.amazonaws.com and students_staging_eks<br>
 adjust the line of assume role: arn:aws:iam::416790849346:role/eks-admin <br>
-go to IAM->roles-> eks-admin->trust relationships -> edit trust policies and add
-```
-        		{
-			"Effect": "Allow",
-			"Principal": {
-				"AWS": "arn:aws:iam::304303674048:user/academy"
-			},
-			"Action": "sts:AssumeRole"
-		}
-```
+
 ### add kubeconfig to gitlab
 add "UNPROTECTED" "FILE" variable called KUBECONFIG <br>
 with value of cat /home/ec2-user/.kube/config <br>
