@@ -318,6 +318,9 @@ create A record -> [ec2 ip] -> ec2-raw.nivitzhaky.com
 
 
 ### Cloudfront
+XXXX create 
+
+
 in the project change the url in 
 environment.prod.ts and 
 environment.ts <br>
@@ -524,6 +527,7 @@ deploy:
 
 ### front repository:
 gitlab import https://github.com/handson-academy/ops-basic-angular.git <br>
+create branch ecs <br>
 create a public s3 bucket: ecs-stage.nivitzhaky.com   (enable static web hosting)
 in permissions:
 ```
@@ -579,15 +583,18 @@ deploy stage:
 ```
 ### Cloudfront
 create distribution<br>
-origin1->
-http only -> 8080-> origin = select load balancer => choose all allowed http methods<br>
-alternate domain name-> ecs-stage.nivitzhaky.com
-Custom SSL certificate - optional -> request new certificate, domanname = *.nivitzhaky.com<br>
-validate be dns-> make aws create cname
-origin2-> select s3 bucket ->
-Default root object: index.html->legacy access identifiers-> create new OAI->
-
+origin1-> select s3 bucket -> use website endpoint -> caching disabled <br>
+alternate domain: ecs-stage.nivitzhaky.com
+cname (give name) ecs-stage.nivitzhaky.com and copy cloudfront distribution url<br>
 hosted zones-> domain -> create record ->
+<br><br>
+origin2->
+http only ->  springboot-lb -> 8080->  choose all allowed http methods<br>
+alternate domain name-> ecs-stage.nivitzhaky.com
+<br>
+behaviours: <br>
+api/* -> allowed methods all -> caching all <br>
+* -> leave default
 
 cname (give name) ecs-stage.nivitzhaky.com and copy cloudfront distribution url
 
@@ -784,6 +791,7 @@ install and run lens https://k8slens.dev/<br>
 ```
 helm delete springboot
 helm delete my-postgres
+https://phoenixnap.com/kb/helm-commands-cheat-sheet
 ```
 
 ### EKS auto deploy
@@ -861,11 +869,77 @@ deploy_to_eks:
     - sed -i "s/latest/$CI_PIPELINE_IID/" springboot/values.yaml
     - helm upgrade -i springboot springboot/ --values springboot/values.yaml
 
-
-
-
 ```
 
+### FRONT AUTOMATION
+in permissions:
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicRead",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": [
+                "s3:GetObject",
+                "s3:GetObjectVersion"
+            ],
+            "Resource": "arn:aws:s3:::ecs-stage.nivitzhaky.com/*"
+        }
+    ]
+}
+```
+
+### GITLAB front:
+env variable -> BACKEND_URL_ECS -> https://ecs-stage.nivitzhaky.com/api<br><br>
+
+.gitlab-ci.yml
+```
+build stage:  
+   image: doctrine/nodejs-aws-cli:v10.19
+   stage: build  
+   only:    
+      - ecs  
+   script:
+      - export BACKEND_URL_ECS=$(aws ssm get-parameter --name "backend_url_ecs" --query "Parameter.Value" --output text --region "eu-north-1")
+      - echo $BACKEND_URL_ECS
+      - sed -i "s/backend_url/$BACKEND_URL_ECS/" src/environments/environment.ts
+      - sed -i "s/backend_url/$BACKEND_URL_ECS/" src/environments/environment.prod.ts    
+      - npm install --save --legacy-peer-deps    
+      # Build App    
+      - npm run build 
+   artifacts:    
+      paths:      
+         # Build folder      
+         - dist/    
+      expire_in: 1 hour
+
+deploy stage:  
+   image: python:latest  
+   stage: deploy  
+   only:    
+      - ecs  
+   script:    
+      - pip install awscli    
+      - aws s3 sync ./dist/webapp/ s3://ecs-stage.nivitzhaky.com   
+```
+### Cloudfront
+create distribution<br>
+origin1-> select s3 bucket -> use website endpoint -> caching disabled <br>
+alternate domain: ecs-stage.nivitzhaky.com
+cname (give name) ecs-stage.nivitzhaky.com and copy cloudfront distribution url<br>
+hosted zones-> domain -> create record ->
+<br><br>
+origin2->
+http only ->  springboot-lb -> 8080->  choose all allowed http methods<br>
+alternate domain name-> ecs-stage.nivitzhaky.com
+<br>
+behaviours: <br>
+api/* -> allowed methods all -> caching all <br>
+* -> leave default
+
+cname (give name) ecs-stage.nivitzhaky.com and copy cloudfront distribution url
 
 
 
