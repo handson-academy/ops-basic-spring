@@ -549,7 +549,11 @@ in permissions:
 ```
 
 ### GITLAB front:
-env variable -> BACKEND_URL_ECS -> https:\/\/ecs-stage.nivitzhaky.com\/api<br><br>
+env variable -> BACKEND_URL_ECS -> https:\/\/ecs-stage.nivitzhaky.com\/api<br>
+AWS_ACCESS_KEY_ID <br>
+AWS_SECRET_ACCESS_KEY <br>
+
+
 
 .gitlab-ci.yml
 ```
@@ -894,7 +898,9 @@ in permissions:
 
 ### GITLAB front:
 create branch eks <br>
-env variable -> BACKEND_URL_EKS -> https:\/\/eks-stage.nivitzhaky.com\/api<br><br>
+env variable -> BACKEND_URL_EKS -> https:\/\/eks-stage.nivitzhaky.com\/api<br>
+AWS_ACCESS_KEY_ID<br>
+AWS_SECRET_ACCESS_KEY<br>
 
 .gitlab-ci.yml
 ```
@@ -944,5 +950,11 @@ api/* -> allowed methods all -> caching all <br>
 
 cname (give name) eks-stage.nivitzhaky.com and copy cloudfront distribution url
 
+## CLEANUP
 
+delete ecs-stage-cluster<br>
+eksctl delete  cluster -f eks.yaml  <br>
+terminate the ec2 instance<br>
+delete load balancers<br>
+delete RDS<br>
 
