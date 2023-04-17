@@ -588,6 +588,8 @@ build stage:
       - echo $BACKEND_URL_ECS
       - sed -i "s/backend_url/'$BACKEND_URL_ECS'/" src/environments/environment.ts
       - sed -i "s/backend_url/'$BACKEND_URL_ECS'/" src/environments/environment.prod.ts    
+      - cat src/environments/environment.ts
+      - cat src/environments/environment.prod.ts
       - npm install --save --legacy-peer-deps    
       # Build App    
       - npm run build 
