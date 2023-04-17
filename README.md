@@ -549,9 +549,12 @@ in permissions:
 ```
 
 ### GITLAB front:
-env variable -> BACKEND_URL_ECS -> https:\/\/ecs-stage.nivitzhaky.com\/api<br>
-AWS_ACCESS_KEY_ID <br>
-AWS_SECRET_ACCESS_KEY <br>
+env variable 
+```
+BACKEND_URL_ECS -> https:\/\/ecs-stage.nivitzhaky.com\/api
+AWS_ACCESS_KEY_ID 
+AWS_SECRET_ACCESS_KEY 
+```
 
 
 
@@ -898,9 +901,10 @@ in permissions:
 
 ### GITLAB front:
 create branch eks <br>
-env variable -> BACKEND_URL_EKS -> https:\/\/eks-stage.nivitzhaky.com\/api<br>
-AWS_ACCESS_KEY_ID<br>
-AWS_SECRET_ACCESS_KEY<br>
+env variable 
+```
+BACKEND_URL_EKS -> https:\/\/eks-stage.nivitzhaky.com\/api
+```
 
 .gitlab-ci.yml
 ```
