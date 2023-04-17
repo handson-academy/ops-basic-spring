@@ -611,19 +611,19 @@ deploy stage:
 ### Cloudfront
 create distribution<br>
 origin1-> select s3 bucket -> use website endpoint -> caching disabled <br>
-alternate domain: ecs-stage.nivitzhaky.com
-cname (give name) ecs-stage.nivitzhaky.com and copy cloudfront distribution url<br>
+alternate domain: ecs.nivitzhaky.com
+cname (give name) ecs.nivitzhaky.com and copy cloudfront distribution url<br>
 hosted zones-> domain -> create record ->
 <br><br>
 origin2->
 http only ->  springboot-lb -> 8080->  choose all allowed http methods<br>
-alternate domain name-> ecs-stage.nivitzhaky.com
+alternate domain name-> ecs.nivitzhaky.com
 <br>
 behaviours: <br>
 api/* -> allowed methods all -> caching all <br>
 * -> leave default
 
-cname (give name) ecs-stage.nivitzhaky.com and copy cloudfront distribution url
+cname (give name) ecs.nivitzhaky.com and copy cloudfront distribution url
 
 
 
