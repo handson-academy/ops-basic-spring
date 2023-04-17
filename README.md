@@ -529,7 +529,7 @@ deploy:
 ### front repository:
 gitlab import https://github.com/handson-academy/ops-basic-angular.git <br>
 create branch ecs <br>
-create a public s3 bucket: ecs-stage.nivitzhaky.com   (enable static web hosting)
+create a public s3 bucket: ecs-stage.files.nivitzhaky.com   (enable static web hosting)
 in permissions:
 ```
 {
@@ -543,7 +543,7 @@ in permissions:
                 "s3:GetObject",
                 "s3:GetObjectVersion"
             ],
-            "Resource": "arn:aws:s3:::ecs-stage.nivitzhaky.com/*"
+            "Resource": "arn:aws:s3:::ecs-stage.files.nivitzhaky.com/*"
         }
     ]
 }
@@ -606,7 +606,7 @@ deploy stage:
       - ecs  
    script:    
       - pip install awscli    
-      - aws s3 sync ./dist/webapp/ s3://ecs-stage.nivitzhaky.com   
+      - aws s3 sync ./dist/webapp/ s3://ecs-stage.files.nivitzhaky.com   
 ```
 ### Cloudfront
 create distribution<br>
