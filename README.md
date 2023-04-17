@@ -492,7 +492,7 @@ configure healthcheck:  CMD-SHELL, curl -f http://localhost:8080/actuator/health
 
 create cluster: ecs-stage-cluster <br>
 create a service: <br>
-faragate-> service-> family=ecs-task-definition->servicename = ecs-stage-service <br>
+fargate-> service-> family=ecs-task-definition->servicename = ecs-stage-service <br>
 
 
 load balancing -> create applicaiton load balancer -> springboot-lb -> port 8080 <br>
