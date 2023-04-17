@@ -405,10 +405,10 @@ CI_AWS_ECS_SERVICE=ecs-stage-service
 
 ### Parameter store
 ```
-students_staging_ecs=jdbc:mysql:\/\/database-2.cmyyngkp9f7o.eu-north-1.rds.amazonaws.com:3306\/students_stage_ecs
+students_staging_ecs=jdbc:mysql://database-2.cmyyngkp9f7o.eu-north-1.rds.amazonaws.com:3306/students_stage_ecs
 students_staging_ecs_user=students_staging_ecs
 students_staging_ecs_password=students_staging_ecs
-students_staging_eks=jdbc:mysql:\/\/database-2.cmyyngkp9f7o.eu-north-1.rds.amazonaws.com:3306\/students_stage_eks
+students_staging_eks=jdbc:mysql://database-2.cmyyngkp9f7o.eu-north-1.rds.amazonaws.com:3306/students_stage_eks
 students_staging_eks_user=students_staging_eks
 students_staging_eks_password=students_staging_eks
 ```
@@ -464,7 +464,8 @@ publish:
     - echo $DB_USER
     - sed -i "s#spring.datasource.url=.*#spring.datasource.url=${DB_URL}#g"  src/main/resources/application.properties
     - sed -i "s#spring.datasource.username=.*#spring.datasource.username=${DB_USER}#g"  src/main/resources/application.properties
-    - sed -i "s#spring.datasource.password=.*#spring.datasource.url=${DB_PASSWORD}#g"  src/main/resources/application.properties
+    - sed -i "s#spring.datasource.password=.*#spring.datasource.password=${DB_PASSWORD}#g"  src/main/resources/application.properties
+    - cat src/main/resources/application.properties
     - apt-get update
     - apt-get install -y curl
     - curl -fsSL https://get.docker.com | sh
