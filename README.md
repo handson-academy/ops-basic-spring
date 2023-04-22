@@ -805,10 +805,15 @@ helm repo add groundhog2k  https://groundhog2k.github.io/helm-charts/
 helm search repo postgres
 helm show values groundhog2k/postgres > postgres-values.yaml
 helm install my-postgres groundhog2k/postgres -f postgres-values.yaml
+update the database, user and password
+
 helm list
 kubectl get pods
+helm uninstall my-postgres
+helm uninstall springboot
 
 
+https://phoenixnap.com/kb/helm-commands-cheat-sheet
 ```
 ### allow role for user academy
 go to IAM->roles-> eks-admin->trust relationships -> edit trust policies and add
