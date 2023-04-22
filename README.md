@@ -958,6 +958,26 @@ in permissions:
 
 ### GITLAB front:
 create branch eks <br>
+create a public s3 bucket: eks-stage.files.nivitzhaky.com   (enable static web hosting)
+in permissions:
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicRead",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": [
+                "s3:GetObject",
+                "s3:GetObjectVersion"
+            ],
+            "Resource": "arn:aws:s3:::eks-stage.files.nivitzhaky.com/*"
+        }
+    ]
+}
+```
+
 env variable 
 ```
 BACKEND_URL_EKS -> https:\/\/eks-stage.nivitzhaky.com\/api
