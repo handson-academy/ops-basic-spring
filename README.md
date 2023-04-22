@@ -956,8 +956,7 @@ in permissions:
 }
 ```
 
-### GITLAB front:
-create branch eks <br>
+### EKS S3 Bucket:
 create a public s3 bucket: eks-staging.nivitzhaky.com   (enable static web hosting)
 in permissions:
 ```
@@ -977,7 +976,8 @@ in permissions:
     ]
 }
 ```
-
+### GITLAB front automation
+create branch eks <br>
 env variable 
 ```
 BACKEND_URL_EKS -> https:\/\/eks.nivitzhaky.com\/api
