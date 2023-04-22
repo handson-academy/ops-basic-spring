@@ -758,8 +758,7 @@ EOF
 
 eksctl create cluster -f eks.yaml
 ```
-### EKS ECR 
-create ecr and call it students_eks
+
 
 ### MANUAL TEST
 ```
@@ -826,6 +825,8 @@ helm delete springboot
 helm delete my-postgres
 https://phoenixnap.com/kb/helm-commands-cheat-sheet
 ```
+### EKS ECR 
+create ecr and call it students_eks
 
 ### EKS auto deploy
 in gitlab go to eks branch -> springboot-> values.yaml put the ecr adress<br>
