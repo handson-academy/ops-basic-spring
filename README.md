@@ -59,6 +59,17 @@ sudo yum update
 sudo yum install git
 git clone git@github.com:nivitzhaky/ops-basic-spring.git 
 ```
+### BASIC Linux commands
+```
+fork repo: https://github.com/handson-academy/basic-html to your account 
+git clone https://github.com/nivitzhaky/basic-html.git
+cd basic-html/
+git branch test-branch
+
+```
+
+
+
 ### MAVEN
 install maven
 ```
