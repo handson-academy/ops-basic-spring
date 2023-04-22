@@ -680,7 +680,7 @@ create role for the computer: <br>
 https://console.aws.amazon.com/iam/home#/roles$new?step=review&commonUseCase=EC2%2BEC2&selectedUseCase=EC2&policies=arn:aws:iam::aws:policy%2FAdministratorAccess&roleName=eks-admin
 <br>
 next next<br>
-turn off credential managment in settings icone -> aws settings -> turn off temporary credentials
+turn off credential managment in settings icone -> aws settings -> turn off temporary credentials <br>
 go to top right -> manage ec2 instance -> actions -> security -> modify aim role -> select eks-admin
 
 
