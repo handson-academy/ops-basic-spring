@@ -775,7 +775,9 @@ service:
 
 
 kubectl apply -f deployment.yaml 
+kubectl get deployment
 kubectl get pods
+
 kubectl apply -f service.yaml
 kubectl get service
 kubectl logs [podid]
