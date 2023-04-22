@@ -829,9 +829,8 @@ go to IAM->roles-> eks-admin->trust relationships -> edit trust policies and add
 ```
 ### connect to cluster
 install kubectl if you want<br>
-cat /home/ec2-user/.kube/config <br>
 create the same file on your machine <br>
-install aws cli -> https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html<br?
+install aws cli -> https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html<br>
 add key and secret key via aws configure<br> 
 aws eks update-kubeconfig --name eks-students --region eu-north-1  --role-arn arn:aws:iam::304303674048:role/eks-admin <br>
 install and run lens https://k8slens.dev/<br>
