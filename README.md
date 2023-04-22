@@ -958,7 +958,7 @@ in permissions:
 
 ### GITLAB front:
 create branch eks <br>
-create a public s3 bucket: eks-stage.files.nivitzhaky.com   (enable static web hosting)
+create a public s3 bucket: eks-staging.nivitzhaky.com   (enable static web hosting)
 in permissions:
 ```
 {
@@ -972,7 +972,7 @@ in permissions:
                 "s3:GetObject",
                 "s3:GetObjectVersion"
             ],
-            "Resource": "arn:aws:s3:::eks-stage.files.nivitzhaky.com/*"
+            "Resource": "arn:aws:s3:::eks-staging.nivitzhaky.com/*"
         }
     ]
 }
@@ -980,7 +980,7 @@ in permissions:
 
 env variable 
 ```
-BACKEND_URL_EKS -> https:\/\/eks-stage.nivitzhaky.com\/api
+BACKEND_URL_EKS -> https:\/\/eks.nivitzhaky.com\/api
 ```
 
 .gitlab-ci.yml
@@ -1012,7 +1012,7 @@ deploy stage:
       - ecs  
    script:    
       - pip install awscli    
-      - aws s3 sync ./dist/webapp/ s3://eks-stage.nivitzhaky.com   
+      - aws s3 sync ./dist/webapp/ s3://eks-staging.nivitzhaky.com   
 ```
 ### Cloudfront
 create distribution<br>
@@ -1023,13 +1023,13 @@ hosted zones-> domain -> create record ->
 <br><br>
 origin2->
 http only ->  ekslb -> 8081->  choose all allowed http methods<br>
-alternate domain name-> eks-stage.nivitzhaky.com
+alternate domain name-> eks.nivitzhaky.com
 <br>
 behaviours: <br>
 api/* -> allowed methods all -> caching all <br>
 * -> leave default
 
-cname (give name) eks-stage.nivitzhaky.com and copy cloudfront distribution url
+cname (give name) eks.nivitzhaky.com and copy cloudfront distribution url
 
 ## CLEANUP
 
