@@ -628,7 +628,7 @@ cname (give name) ecs.nivitzhaky.com and copy cloudfront distribution url
 
 
 ## EKS
-
+eksworkshop.com
 ### Cloud 9 
 create a cloud 9 computer call it students
 
