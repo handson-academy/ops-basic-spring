@@ -845,21 +845,35 @@ create ecr and call it students_eks
 
 ### EKS auto deploy
 in gitlab go to eks branch -> springboot-> values.yaml put the ecr adress<br>
-change registry url and app name to: 416790849346.dkr.ecr.eu-north-1.amazonaws.com and students_staging_eks<br>
-adjust the line of assume role: arn:aws:iam::416790849346:role/eks-admin <br>
 
-### add kubeconfig to gitlab
-add "UNPROTECTED" "FILE" variable called KUBECONFIG <br>
-with value of cat /home/ec2-user/.kube/config <br>
+ci-settings.xml
+```
+<settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
+  <servers>
+    <server>
+      <id>gitlab-maven</id>
+      <configuration>
+        <httpHeaders>
+          <property>
+            <name>Job-Token</name>
+            <value>${CI_JOB_TOKEN}</value>
+          </property>
+        </httpHeaders>
+      </configuration>
+    </server>
+  </servers>
+</settings>
+```
 
 create gitlab-ci.yaml
 ```
 variables:
-  DOCKER_REGISTRY: 304303674048.dkr.ecr.eu-north-1.amazonaws.com
+  DOCKER_REGISTRY: [eks-ecr no /]
   AWS_DEFAULT_REGION: eu-north-1
   APP_NAME: students_eks
   DOCKER_HOST: tcp://docker:2375
-  EKS_ROLE: arn:aws:iam::304303674048:role/eks-admin
+  EKS_ROLE: [eks-admin urn]
 
 publish:
   image: 
