@@ -765,6 +765,15 @@ eksctl create cluster -f eks.yaml
 git clone https://github.com/handson-academy/ops-basic-spring
 kubectl get pods
 manually copy the templates and replace values
+deployment.yaml
+image from ecr
+
+service.yaml:
+service:
+  type: LoadBalancer
+  port: 8081
+
+
 kubectl apply -f deployment.yaml 
 kubectl get pods
 kubectl apply -f service.yaml
