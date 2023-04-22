@@ -801,10 +801,12 @@ chmod 700 get_helm.sh
 update ecr in values.yaml
 
 helm upgrade -i springboot springboot/ --values springboot/values.yaml
+helm list
 
 go to https://artifacthub.io/packages/helm/groundhog2k/postgres
 
 helm repo add groundhog2k  https://groundhog2k.github.io/helm-charts/
+helm repo list
 helm search repo postgres
 helm show values groundhog2k/postgres > postgres-values.yaml
 helm install my-postgres groundhog2k/postgres -f postgres-values.yaml
