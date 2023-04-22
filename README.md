@@ -791,6 +791,9 @@ kubectl delete -f service.yaml
 
 ### HELM TEST
 ```
+rm -rf ops-basic-spring
+git clone https://github.com/handson-academy/ops-basic-spring
+
 curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
 chmod 700 get_helm.sh
 ./get_helm.sh
@@ -809,11 +812,7 @@ update the database, user and password
 
 helm list
 kubectl get pods
-helm uninstall my-postgres
-helm uninstall springboot
 
-
-https://phoenixnap.com/kb/helm-commands-cheat-sheet
 ```
 ### allow role for user academy
 go to IAM->roles-> eks-admin->trust relationships -> edit trust policies and add
