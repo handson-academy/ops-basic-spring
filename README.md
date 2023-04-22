@@ -763,7 +763,7 @@ eksctl create cluster -f eks.yaml
 ### MANUAL TEST
 ```
 git clone https://github.com/handson-academy/ops-basic-spring
-kubectl get pods
+
 manually copy the templates and replace values
 deployment.yaml
 image from ecr
