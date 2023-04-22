@@ -1017,8 +1017,8 @@ deploy stage:
 ### Cloudfront
 create distribution<br>
 origin1-> select s3 bucket -> use website endpoint -> caching disabled <br>
-alternate domain: eks-stage.nivitzhaky.com
-cname (give name) eks-stage.nivitzhaky.com and copy cloudfront distribution url<br>
+alternate domain: eks-staging.nivitzhaky.com
+cname (give name) eks-staging.nivitzhaky.com and copy cloudfront distribution url<br>
 hosted zones-> domain -> create record ->
 <br><br>
 origin2->
