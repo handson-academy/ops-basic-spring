@@ -1009,7 +1009,7 @@ deploy stage:
    image: python:latest  
    stage: deploy  
    only:    
-      - ecs  
+      - eks  
    script:    
       - pip install awscli    
       - aws s3 sync ./dist/webapp/ s3://eks-staging.nivitzhaky.com   
