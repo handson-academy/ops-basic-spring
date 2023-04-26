@@ -125,7 +125,7 @@ git status
 vi index.html 
 vi index2.html
 git add index2.html
-git commit -m "2 indexes"
+git commit -a -m "2 indexes"
 git push
 
 create a pull request
