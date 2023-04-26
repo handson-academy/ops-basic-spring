@@ -106,6 +106,8 @@ sudo yum install python
 python --version
 python -m http.server 5555
 nohup python -m http.server 5555 &
+tail -f nohup.out
+
 ps -ef | grep python
 pgrep python
 kill -9 [pid]
@@ -139,14 +141,15 @@ ll
 cd ..
 find . -name "index*.html" 
 find . -name "index*.html" | xargs grep Hello
+grep -r Hello *
 
 mkdir newdir
 echo "
-{\"attr1\": \"val1\", \"attr2\" : \"val2\"}
+{\"service\": {\"id\": 3, \"name\" : \"service3\"}}
 " > newdir/1.json
 
 sudo yum install jq
-cat  newdir/1.json | jq -r '.attr1'
+cat  newdir/1.json | jq -r '.service.name'
 
 echo "
 version: v1
@@ -175,6 +178,8 @@ make a private repository
 try to clone with https
 now with ssh
 
+df -h
+find . -type f -exec du -ah {} + | sort -rh | head -n 10
 ```
 
 
