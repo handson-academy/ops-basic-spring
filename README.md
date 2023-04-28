@@ -677,7 +677,7 @@ in permissions:
 ### GITLAB front:
 env variable 
 ```
-BACKEND_URL_ECS -> https:\/\/ecs-stage.nivitzhaky.com\/api
+BACKEND_URL_ECS -> https:\/\/ecs.nivitzhaky.com\/api
 AWS_ACCESS_KEY_ID 
 AWS_SECRET_ACCESS_KEY 
 ```
