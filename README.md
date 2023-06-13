@@ -271,15 +271,16 @@ test on http://13.50.247.173:3000
 
 ### DOCKER AUTOMATION
 add the following secrets:
+go to ops-basic-spring > settings > secrets and variables -> actions > new repo secret 
 ```
-DOCKERHUB_USERNAME = nivitzhaky
-DOCKERHUB_TOKEN = dckr_pat_wNsuA4lJiuBnc4iCsNCmxjCVjc4
-EC2_INSTANCE_PUBLIC_IP = 13.50.235.108
+DOCKERHUB_USERNAME = hoolinova
+DOCKERHUB_TOKEN = dckr_pat_q5y73A28R5tiTo6Q8rTOOJR_a8w
+EC2_INSTANCE_PUBLIC_IP = 18.195.65.39
 SSH_KEY = 
 
 ```
 
-
+Click actions -> new action(any) add new file : 
 add .github/workflows/build.yml
 ```
 name: Build and Deploy
