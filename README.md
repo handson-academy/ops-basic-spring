@@ -1,8 +1,4 @@
 # devops
-Niv Itzhaky<br>
-https://www.linkedin.com/in/nivitzhaky/<br>
-niv.itzhaky@gmail.com<br>
-0525236451<br>
 
 link to presentation -> https://docs.google.com/presentation/d/1fb-fyxiP5T-3Xdn1d7XT1kwAY2jOSOCy1TY5jITSOtw/edit?usp=sharing <br>
 create your own account <br>
@@ -57,7 +53,7 @@ install git
 ```
 sudo yum update
 sudo yum install git
-git clone git@github.com:nivitzhaky/ops-basic-spring.git 
+git clone git@github.com:hoolinova/ops-basic-spring.git 
 ```
 ### BASIC Linux commands
 ```
@@ -203,10 +199,10 @@ create token account setting -> security
 ```
 sudo docker build . -t backend
 sudo docker login
-nivitzhaky
-Jul201789#
-sudo docker tag backend nivitzhaky/backend
-sudo docker push nivitzhaky/backend
+
+
+sudo docker tag backend hoolinova/backend
+sudo docker push hoolinova/backend
 
 git pull
 echo "
@@ -215,7 +211,7 @@ services:
   appserver:
     container_name: server
     hostname: localhost
-    image: nivitzhaky/backend:latest
+    image: hoolinova/backend:latest
     ports:
       - "8080:8080"
   mysql:
