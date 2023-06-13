@@ -1,0 +1,22 @@
+
+version: "3"
+services:
+  appserver:
+    container_name: server
+    hostname: localhost
+    image: hoolinova/backend:latest
+    ports:
+      - 8080:8080
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: Unix11
+      MYSQL_DATABASE: students
+      MYSQL_USER: students
+      MYSQL_PASSWORD: Unix11
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    privileged: true
+
